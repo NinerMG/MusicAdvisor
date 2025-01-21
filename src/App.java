@@ -2,9 +2,9 @@ public class App {
 
     UserInput userInput;
     AppResponse appResponse;
-    public App(){
+    public App(String RedirectedURI, String ClientID){
         userInput = new UserInput();
-        appResponse = new AppResponse();
+        appResponse = new AppResponse(RedirectedURI, ClientID);
     }
 
     public void start() {

@@ -1,21 +1,45 @@
 public class AppResponse {
+    private boolean authenticated = false;
+    private String RedirectedURI;
+    private String ClientID;
+
+    public AppResponse(String RedirectedURI, String ClientID){
+        this.RedirectedURI = RedirectedURI;
+        this.ClientID = ClientID;
+    }
 
     public boolean responseHandling(String query){
         boolean flag = true;
 
         switch (query.split(" ")[0].toLowerCase()){
+            case "auth":
+                handleAuthentication();
+                break;
             case "new":
+                if (!isAuthenticated()){
+                    System.out.println("Please, provide access for application.");
+                } else
                 handleNew();
                 break;
             case "featured":
+                if (!isAuthenticated()){
+                    System.out.println("Please, provide access for application.");
+                } else
                 handleFeatured();
                 break;
             case "categories":
+                if (!isAuthenticated()){
+                    System.out.println("Please, provide access for application.");
+                } else
                 handleCategories();
                 break;
             case "playlists":
+                if (!isAuthenticated()){
+                    System.out.println("Please, provide access for application.");
+                } else {
                     String category = query.substring(10);
                     handlePlaylists(category);
+                }
                 break;
             case "exit":
                 System.out.println("---GOODBYE!---");
@@ -65,4 +89,22 @@ public class AppResponse {
         }
     }
 
+    private boolean isAuthenticated(){
+        return authenticated;
+    }
+    private void setAuthenticated(boolean authenticated){
+        this.authenticated = authenticated;
+    }
+
+    private void handleAuthentication(){
+        String baseUrl = "https://accounts.spotify.com/authorize";
+        String responseType = "code";
+        String responseLink = String.format("%s?client_id=%s&redirect_uri=%s&response_type=%s",
+                baseUrl, ClientID, RedirectedURI, responseType);
+        System.out.println(responseLink);
+        if (responseLink.equals("https://accounts.spotify.com/authorize?client_id=866b195e523f4a77b7d4a484ff436cd0&redirect_uri=http://localhost:8080&response_type=code")){
+            System.out.println("---SUCCESS---");
+        }
+        setAuthenticated(true);
+    }
 }
